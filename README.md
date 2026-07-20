@@ -4,12 +4,14 @@ Site da Avance Cursos.
 
 ## Como editar facil
 
-- O projeto principal continua em React/TanStack Start.
-- Para edicao simples, abra `site-editavel.html`.
+- Para abrir sem terminal, use Live Server no arquivo `index.html`.
+- Para edicao simples, edite `index.html` ou `site-editavel.html`.
 - Textos, links e imagens ficam direto no HTML.
 - As imagens ficam em `src/assets`.
 
-## Rodar o projeto
+## Versao React opcional
+
+O projeto React/TanStack continua disponivel se quiser usar o app original.
 
 ```bash
 npm install
