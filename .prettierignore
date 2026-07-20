@@ -1,6 +1,0 @@
-node_modules
-.output
-.wrangler
-.tanstack
-dist
-dist-ssr
