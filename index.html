@@ -1427,18 +1427,18 @@
 
       function buildLeadData() {
         const recifeDateTime = getRecifeDateTime();
-        const formData = new FormData(form);
+        const params = new URLSearchParams(new FormData(form));
 
-        formData.append("data_envio", recifeDateTime.data);
-        formData.append("hora_envio", recifeDateTime.hora);
-        formData.append("data_hora_envio", recifeDateTime.completa);
-        formData.append("timestamp_iso", recifeDateTime.iso);
-        formData.append("timezone", "America/Recife");
-        formData.append("pagina", window.location.href);
-        formData.append("origem", "site-html-live-server");
-        formData.append("navegador", navigator.userAgent);
+        params.append("data_envio", recifeDateTime.data);
+        params.append("hora_envio", recifeDateTime.hora);
+        params.append("data_hora_envio", recifeDateTime.completa);
+        params.append("timestamp_iso", recifeDateTime.iso);
+        params.append("timezone", "America/Recife");
+        params.append("pagina", window.location.href);
+        params.append("origem", "site-html-live-server");
+        params.append("navegador", navigator.userAgent);
 
-        return formData;
+        return params;
       }
 
       if (form) {
@@ -1456,6 +1456,9 @@
             await fetch(GOOGLE_SCRIPT_URL, {
               method: "POST",
               mode: "no-cors",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+              },
               body: buildLeadData(),
             });
 
