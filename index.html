@@ -954,7 +954,13 @@
             </div>
           </div>
 
-          <form id="matricula" class="form-card">
+          <form
+            id="matricula"
+            class="form-card"
+            action="https://script.google.com/macros/s/AKfycbw3BJmofKi4YiF-c8WCMKOUI-uCxOk8bZvVpAcH0QZN2P_EXRJKc4jfhwTV8I8eSNEw/exec"
+            method="POST"
+            target="google-sheet-frame"
+          >
             <h2>Solicite contato</h2>
             <label>
               Nome completo
@@ -989,6 +995,12 @@
             </label>
             <button class="button" type="submit">Quero garantir minha vaga</button>
           </form>
+          <iframe
+            name="google-sheet-frame"
+            title="Envio do formulario"
+            style="display: none"
+            aria-hidden="true"
+          ></iframe>
         </div>
       </section>
 
@@ -1427,50 +1439,52 @@
 
       function buildLeadData() {
         const recifeDateTime = getRecifeDateTime();
-        const params = new URLSearchParams(new FormData(form));
+        return {
+          data_envio: recifeDateTime.data,
+          hora_envio: recifeDateTime.hora,
+          data_hora_envio: recifeDateTime.completa,
+          timestamp_iso: recifeDateTime.iso,
+          timezone: "America/Recife",
+          pagina: window.location.href,
+          origem: "site-html-live-server",
+          navegador: navigator.userAgent,
+        };
+      }
 
-        params.append("data_envio", recifeDateTime.data);
-        params.append("hora_envio", recifeDateTime.hora);
-        params.append("data_hora_envio", recifeDateTime.completa);
-        params.append("timestamp_iso", recifeDateTime.iso);
-        params.append("timezone", "America/Recife");
-        params.append("pagina", window.location.href);
-        params.append("origem", "site-html-live-server");
-        params.append("navegador", navigator.userAgent);
+      function setHiddenField(name, value) {
+        let input = form.querySelector(`input[name="${name}"]`);
 
-        return params;
+        if (!input) {
+          input = document.createElement("input");
+          input.type = "hidden";
+          input.name = name;
+          form.appendChild(input);
+        }
+
+        input.value = value;
       }
 
       if (form) {
-        form.addEventListener("submit", async (event) => {
+        form.action = GOOGLE_SCRIPT_URL;
+        form.addEventListener("submit", (event) => {
           event.preventDefault();
           const submitButton = form.querySelector('button[type="submit"]');
-          const originalButtonText = submitButton?.textContent || "Enviar";
 
           if (submitButton) {
             submitButton.disabled = true;
             submitButton.textContent = "Enviando...";
           }
 
-          try {
-            await fetch(GOOGLE_SCRIPT_URL, {
-              method: "POST",
-              mode: "no-cors",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-              },
-              body: buildLeadData(),
-            });
+          Object.entries(buildLeadData()).forEach(([name, value]) => {
+            setHiddenField(name, value);
+          });
 
+          HTMLFormElement.prototype.submit.call(form);
+
+          window.setTimeout(() => {
             form.innerHTML =
               '<div style="text-align:center; padding: 36px 0"><h2>Inscricao recebida!</h2><p class="lede" style="margin-inline:auto">Nossa equipe entrara em contato em ate 24 horas uteis.</p><a class="button" href="#top">Voltar ao inicio</a></div>';
-          } catch (error) {
-            if (submitButton) {
-              submitButton.disabled = false;
-              submitButton.textContent = originalButtonText;
-            }
-            alert("Nao foi possivel enviar agora. Confira sua conexao e tente novamente.");
-          }
+          }, 900);
         });
       }
 
