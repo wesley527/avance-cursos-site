@@ -1249,18 +1249,29 @@
           grid-template-columns: 1fr;
         }
 
+        .courses {
+          row-gap: 24px;
+        }
+
         .course-card {
-          min-height: 250px;
-          padding: 20px;
+          min-height: 176px;
+          margin-top: 18px;
+          overflow: visible;
+          padding: 18px 16px 16px;
+          isolation: isolate;
         }
 
         .course-card .card-content {
-          max-width: 100%;
-          padding-top: 104px;
+          z-index: 1;
+          max-width: 78%;
+          padding-top: 8px;
         }
 
         .course-card .card-emoji {
-          width: 100px;
+          top: -24px;
+          right: -10px;
+          z-index: 0;
+          width: 132px;
         }
 
         .course-card h3 {
@@ -1303,10 +1314,41 @@
         .gallery,
         .experience-grid,
         .testimonials {
-          overflow: hidden;
+          overflow-x: auto;
+          overflow-y: visible;
+          scroll-snap-type: x proximity;
+          mask-image: none;
+          -webkit-mask-image: none;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none;
+          touch-action: pan-x;
+          cursor: grab;
+          overscroll-behavior-x: contain;
+        }
+
+        .gallery::-webkit-scrollbar,
+        .experience-grid::-webkit-scrollbar,
+        .testimonials::-webkit-scrollbar {
+          display: none;
+        }
+
+        .gallery.is-dragging,
+        .experience-grid.is-dragging,
+        .testimonials.is-dragging {
+          cursor: grabbing;
           scroll-snap-type: none;
-          mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
-          -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+        }
+
+        .gallery .carousel-track,
+        .experience-grid .carousel-track,
+        .testimonials .carousel-track {
+          animation: none;
+        }
+
+        .gallery img,
+        .experience-card,
+        .testimonial {
+          scroll-snap-align: start;
         }
 
         .testimonials {
@@ -1324,7 +1366,7 @@
           display: flex;
           gap: var(--carousel-gap);
           width: max-content;
-          animation: carousel-scroll var(--carousel-duration) linear infinite;
+          animation: none;
           will-change: transform;
         }
 
@@ -1387,18 +1429,20 @@
         }
 
         .course-card {
-          min-height: 230px;
-          padding: 18px;
+          min-height: 164px;
+          margin-top: 20px;
+          padding: 16px;
         }
 
         .course-card .card-emoji {
-          right: 12px;
-          top: 14px;
-          width: 96px;
+          right: -12px;
+          top: -22px;
+          width: 124px;
         }
 
         .course-card .card-content {
-          padding-top: 96px;
+          max-width: 76%;
+          padding-top: 4px;
         }
 
         .form-card {
@@ -1537,8 +1581,9 @@
         }
 
         .course-card {
-          min-height: 212px;
-          padding: 16px;
+          min-height: 150px;
+          margin-top: 18px;
+          padding: 14px;
         }
 
         .card-content {
@@ -1546,11 +1591,14 @@
         }
 
         .course-card .card-content {
-          padding-top: 86px;
+          max-width: 74%;
+          padding-top: 2px;
         }
 
         .course-card .card-emoji {
-          width: 86px;
+          right: -14px;
+          top: -18px;
+          width: 112px;
         }
 
         .gallery {
@@ -2138,6 +2186,140 @@
         });
       });
 
+      const mobileCarouselQuery = window.matchMedia("(max-width: 680px)");
+
+      function getCarouselLoopPoint(track, originalCount) {
+        const firstClone = track.children[originalCount];
+        return firstClone ? firstClone.offsetLeft : Math.floor(track.scrollWidth / 2);
+      }
+
+      function enableMobileCarouselScroll(carousel, track, originalCount) {
+        let loopPoint = 0;
+        let scrollFrame = 0;
+        let resizeFrame = 0;
+        let isMouseDragging = false;
+        let didMouseDrag = false;
+        let dragStartX = 0;
+        let dragStartScroll = 0;
+
+        const measure = () => {
+          loopPoint = getCarouselLoopPoint(track, originalCount);
+          return loopPoint;
+        };
+
+        const applyMode = () => {
+          const measuredLoopPoint = measure();
+          if (!measuredLoopPoint) return;
+
+          if (mobileCarouselQuery.matches) {
+            if (carousel.dataset.mobileLoopReady !== "true") {
+              carousel.scrollLeft = measuredLoopPoint;
+              carousel.dataset.mobileLoopReady = "true";
+            }
+          } else {
+            carousel.dataset.mobileLoopReady = "false";
+            carousel.scrollLeft = 0;
+          }
+        };
+
+        const keepLooping = () => {
+          if (!mobileCarouselQuery.matches) return;
+
+          const measuredLoopPoint = loopPoint || measure();
+          if (!measuredLoopPoint) return;
+
+          if (carousel.scrollLeft <= 1) {
+            carousel.scrollLeft += measuredLoopPoint;
+          } else if (carousel.scrollLeft >= measuredLoopPoint + 1) {
+            carousel.scrollLeft -= measuredLoopPoint;
+          }
+        };
+
+        carousel.addEventListener(
+          "scroll",
+          () => {
+            if (!mobileCarouselQuery.matches || scrollFrame) return;
+            scrollFrame = requestAnimationFrame(() => {
+              scrollFrame = 0;
+              keepLooping();
+            });
+          },
+          { passive: true },
+        );
+
+        carousel.addEventListener("pointerdown", (event) => {
+          if (!mobileCarouselQuery.matches || event.pointerType === "touch") return;
+
+          isMouseDragging = true;
+          didMouseDrag = false;
+          dragStartX = event.clientX;
+          dragStartScroll = carousel.scrollLeft;
+          carousel.classList.add("is-dragging", "is-paused");
+
+          if (typeof event.pointerId === "number" && carousel.setPointerCapture) {
+            carousel.setPointerCapture(event.pointerId);
+          }
+        });
+
+        carousel.addEventListener("pointermove", (event) => {
+          if (!isMouseDragging) return;
+
+          const deltaX = event.clientX - dragStartX;
+          if (Math.abs(deltaX) > 3) didMouseDrag = true;
+          carousel.scrollLeft = dragStartScroll - deltaX;
+          event.preventDefault();
+        });
+
+        const stopMouseDrag = (event) => {
+          if (!isMouseDragging) return;
+
+          isMouseDragging = false;
+          carousel.classList.remove("is-dragging");
+
+          if (
+            event &&
+            typeof event.pointerId === "number" &&
+            carousel.hasPointerCapture &&
+            carousel.hasPointerCapture(event.pointerId)
+          ) {
+            carousel.releasePointerCapture(event.pointerId);
+          }
+        };
+
+        ["pointerup", "pointercancel", "mouseleave"].forEach((eventName) => {
+          carousel.addEventListener(eventName, stopMouseDrag);
+        });
+
+        carousel.addEventListener(
+          "click",
+          (event) => {
+            if (!didMouseDrag) return;
+            event.preventDefault();
+            event.stopPropagation();
+            didMouseDrag = false;
+          },
+          true,
+        );
+
+        const scheduleModeUpdate = () => {
+          if (resizeFrame) cancelAnimationFrame(resizeFrame);
+          resizeFrame = requestAnimationFrame(() => {
+            resizeFrame = 0;
+            applyMode();
+          });
+        };
+
+        if (mobileCarouselQuery.addEventListener) {
+          mobileCarouselQuery.addEventListener("change", scheduleModeUpdate);
+        } else {
+          mobileCarouselQuery.addListener(scheduleModeUpdate);
+        }
+
+        window.addEventListener("resize", scheduleModeUpdate, { passive: true });
+        window.addEventListener("load", scheduleModeUpdate, { once: true });
+        requestAnimationFrame(applyMode);
+      }
+
       function setupInfiniteCarousel(selector) {
         const carousel = document.querySelector(selector);
         if (!carousel || carousel.dataset.ready === "true") return;
@@ -2156,6 +2338,7 @@
 
         carousel.appendChild(track);
         carousel.dataset.ready = "true";
+        enableMobileCarouselScroll(carousel, track, items.length);
 
         ["pointerdown", "touchstart", "focusin"].forEach((eventName) => {
           carousel.addEventListener(eventName, () => carousel.classList.add("is-paused"), {
