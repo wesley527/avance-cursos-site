@@ -685,8 +685,10 @@
 
       .gallery:hover .carousel-track,
       .experience-grid:hover .carousel-track,
+      .testimonials:hover .carousel-track,
       .gallery.is-paused .carousel-track,
-      .experience-grid.is-paused .carousel-track {
+      .experience-grid.is-paused .carousel-track,
+      .testimonials.is-paused .carousel-track {
         animation-play-state: paused;
       }
 
@@ -775,6 +777,16 @@
         border-radius: var(--radius);
         background: rgba(33, 29, 23, 0.72);
         padding: 28px;
+      }
+
+      .testimonials .carousel-track {
+        display: contents;
+        animation: none;
+        width: auto;
+      }
+
+      .testimonials .testimonial[aria-hidden="true"] {
+        display: none;
       }
 
       .person {
@@ -1157,7 +1169,7 @@
         }
 
         .hero-emoji {
-          width: 132px;
+          width: 146px;
         }
 
         .stats {
@@ -1233,9 +1245,42 @@
         .courses,
         .features,
         .units,
-        .testimonials,
         .guarantee {
           grid-template-columns: 1fr;
+        }
+
+        .course-card {
+          min-height: 250px;
+          padding: 20px;
+        }
+
+        .course-card .card-content {
+          max-width: 100%;
+          padding-top: 104px;
+        }
+
+        .course-card .card-emoji {
+          width: 100px;
+        }
+
+        .course-card h3 {
+          font-size: 1.18rem;
+        }
+
+        .course-card p {
+          margin-block: 8px 0;
+          font-size: 0.94rem;
+          line-height: 1.48;
+        }
+
+        .course-card .tags {
+          gap: 6px;
+          margin-top: 14px;
+        }
+
+        .course-card .tags li {
+          padding: 5px 8px;
+          font-size: 0.7rem;
         }
 
         .stats {
@@ -1256,20 +1301,40 @@
         }
 
         .gallery,
-        .experience-grid {
-          overflow-x: auto;
-          scroll-snap-type: x proximity;
-          mask-image: none;
-          -webkit-mask-image: none;
+        .experience-grid,
+        .testimonials {
+          overflow: hidden;
+          scroll-snap-type: none;
+          mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
         }
 
-        .carousel-track {
-          animation: none;
+        .testimonials {
+          --carousel-gap: 14px;
+          --carousel-duration: 48s;
+          --item-width: min(84vw, 320px);
+          position: relative;
+          display: flex;
+          gap: var(--carousel-gap);
+          border-radius: var(--radius);
+          padding-block: 6px;
         }
 
-        .gallery img,
-        .experience-card {
-          scroll-snap-align: start;
+        .testimonials .carousel-track {
+          display: flex;
+          gap: var(--carousel-gap);
+          width: max-content;
+          animation: carousel-scroll var(--carousel-duration) linear infinite;
+          will-change: transform;
+        }
+
+        .testimonials .testimonial {
+          flex: 0 0 var(--item-width);
+          width: var(--item-width);
+        }
+
+        .testimonials .testimonial[aria-hidden="true"] {
+          display: block;
         }
       }
 
@@ -1308,7 +1373,7 @@
         }
 
         .hero-emoji {
-          width: 100px;
+          width: 126px;
         }
 
         .lede {
@@ -1319,6 +1384,21 @@
         .form-card,
         .card {
           padding: 22px;
+        }
+
+        .course-card {
+          min-height: 230px;
+          padding: 18px;
+        }
+
+        .course-card .card-emoji {
+          right: 12px;
+          top: 14px;
+          width: 96px;
+        }
+
+        .course-card .card-content {
+          padding-top: 96px;
         }
 
         .form-card {
@@ -1362,6 +1442,11 @@
           --carousel-gap: 12px;
           --item-width: min(84vw, 320px);
           --item-height: 340px;
+        }
+
+        .testimonials {
+          --carousel-gap: 12px;
+          --item-width: min(84vw, 320px);
         }
 
         .card-emoji {
@@ -1431,7 +1516,7 @@
         }
 
         .hero-emoji {
-          width: 80px;
+          width: 108px;
         }
 
         .stats {
@@ -1451,8 +1536,21 @@
           padding: 18px;
         }
 
+        .course-card {
+          min-height: 212px;
+          padding: 16px;
+        }
+
         .card-content {
           padding-top: 112px;
+        }
+
+        .course-card .card-content {
+          padding-top: 86px;
+        }
+
+        .course-card .card-emoji {
+          width: 86px;
         }
 
         .gallery {
@@ -1463,6 +1561,10 @@
         .experience-grid {
           --item-width: min(86vw, 296px);
           --item-height: 318px;
+        }
+
+        .testimonials {
+          --item-width: min(86vw, 296px);
         }
 
         .scroll-top {
@@ -1481,7 +1583,8 @@
         }
 
         .gallery,
-        .experience-grid {
+        .experience-grid,
+        .testimonials {
           overflow-x: auto;
           scroll-snap-type: x mandatory;
           mask-image: none;
@@ -1489,7 +1592,8 @@
         }
 
         .gallery img,
-        .experience-card {
+        .experience-card,
+        .testimonial {
           scroll-snap-align: start;
         }
       }
@@ -2068,6 +2172,7 @@
 
       setupInfiniteCarousel(".gallery");
       setupInfiniteCarousel(".experience-grid");
+      setupInfiniteCarousel(".testimonials");
 
       function getRecifeDateTime() {
         const now = new Date();
