@@ -302,6 +302,11 @@
         cursor: pointer;
       }
 
+      .button:disabled {
+        cursor: progress;
+        opacity: 0.72;
+      }
+
       .button.inline {
         width: auto;
         padding-inline: 26px;
@@ -960,6 +965,10 @@
               <input name="telefone" placeholder="(81) 99999-9999" required />
             </label>
             <label>
+              Idade
+              <input name="idade" type="number" min="10" max="99" placeholder="Sua idade" required />
+            </label>
+            <label>
               Cidade
               <select name="cidade" required>
                 <option value="">Selecione</option>
@@ -1361,6 +1370,8 @@
     </footer>
     <button class="scroll-top" type="button" aria-label="Voltar ao topo">↑</button>
     <script>
+      const GOOGLE_SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbw3BJmofKi4YiF-c8WCMKOUI-uCxOk8bZvVpAcH0QZN2P_EXRJKc4jfhwTV8I8eSNEw/exec";
       const form = document.querySelector("#matricula");
       const courseSelect = document.querySelector('select[name="curso"]');
       const citySelect = document.querySelector('select[name="cidade"]');
@@ -1392,11 +1403,71 @@
         });
       });
 
+      function getRecifeDateTime() {
+        const now = new Date();
+        const parts = new Intl.DateTimeFormat("pt-BR", {
+          timeZone: "America/Recife",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }).formatToParts(now);
+        const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+
+        return {
+          data: `${values.day}/${values.month}/${values.year}`,
+          hora: `${values.hour}:${values.minute}:${values.second}`,
+          completa: `${values.day}/${values.month}/${values.year} ${values.hour}:${values.minute}:${values.second}`,
+          iso: now.toISOString(),
+        };
+      }
+
+      function buildLeadData() {
+        const recifeDateTime = getRecifeDateTime();
+        const formData = new FormData(form);
+
+        formData.append("data_envio", recifeDateTime.data);
+        formData.append("hora_envio", recifeDateTime.hora);
+        formData.append("data_hora_envio", recifeDateTime.completa);
+        formData.append("timestamp_iso", recifeDateTime.iso);
+        formData.append("timezone", "America/Recife");
+        formData.append("pagina", window.location.href);
+        formData.append("origem", "site-html-live-server");
+        formData.append("navegador", navigator.userAgent);
+
+        return formData;
+      }
+
       if (form) {
-        form.addEventListener("submit", (event) => {
+        form.addEventListener("submit", async (event) => {
           event.preventDefault();
-          form.innerHTML =
-            '<div style="text-align:center; padding: 36px 0"><h2>Inscricao recebida!</h2><p class="lede" style="margin-inline:auto">Nossa equipe entrara em contato em ate 24 horas uteis.</p><a class="button" href="#top">Voltar ao inicio</a></div>';
+          const submitButton = form.querySelector('button[type="submit"]');
+          const originalButtonText = submitButton?.textContent || "Enviar";
+
+          if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = "Enviando...";
+          }
+
+          try {
+            await fetch(GOOGLE_SCRIPT_URL, {
+              method: "POST",
+              mode: "no-cors",
+              body: buildLeadData(),
+            });
+
+            form.innerHTML =
+              '<div style="text-align:center; padding: 36px 0"><h2>Inscricao recebida!</h2><p class="lede" style="margin-inline:auto">Nossa equipe entrara em contato em ate 24 horas uteis.</p><a class="button" href="#top">Voltar ao inicio</a></div>';
+          } catch (error) {
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = originalButtonText;
+            }
+            alert("Nao foi possivel enviar agora. Confira sua conexao e tente novamente.");
+          }
         });
       }
 
