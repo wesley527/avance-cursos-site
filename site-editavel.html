@@ -1,0 +1,779 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Avance Cursos - Site editavel</title>
+    <meta
+      name="description"
+      content="Cursos profissionalizantes em Marketing Digital, Farmacia, Administracao e Informatica."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /*
+        COMO EDITAR RAPIDO
+        1. Textos: procure pelos titulos e paragrafos no HTML abaixo.
+        2. Imagens: troque os caminhos em src="src/assets/...".
+        3. Cores: altere as variaveis abaixo em :root.
+      */
+      :root {
+        --bg: #17140f;
+        --surface: #211d17;
+        --surface-2: #2a251d;
+        --text: #fbf8ee;
+        --muted: #b7ad9b;
+        --border: rgba(255, 255, 255, 0.1);
+        --gold: #dba84d;
+        --gold-dark: #211508;
+        --radius: 24px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background:
+          radial-gradient(circle at 20% 10%, rgba(219, 168, 77, 0.14), transparent 28rem),
+          radial-gradient(circle at 82% 34%, rgba(120, 150, 255, 0.1), transparent 25rem),
+          var(--bg);
+        color: var(--text);
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(circle, rgba(255, 255, 255, 0.35) 0 1px, transparent 1px),
+          radial-gradient(circle, rgba(219, 168, 77, 0.3) 0 1px, transparent 1px);
+        background-position:
+          0 0,
+          44px 80px;
+        background-size:
+          130px 130px,
+          190px 190px;
+        opacity: 0.18;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .container {
+        width: min(1120px, calc(100% - 40px));
+        margin-inline: auto;
+      }
+
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid var(--border);
+        background: rgba(23, 20, 15, 0.76);
+        backdrop-filter: blur(18px);
+      }
+
+      .nav {
+        min-height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .logo {
+        width: 168px;
+      }
+
+      .menu {
+        display: flex;
+        gap: 28px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .menu a {
+        text-decoration: none;
+      }
+
+      .menu a:hover {
+        color: var(--text);
+      }
+
+      .hero {
+        padding: 80px 0 64px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 56px;
+        align-items: start;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.04);
+        padding: 8px 14px;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--gold);
+        box-shadow: 0 0 18px var(--gold);
+      }
+
+      .hero-title-row {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-top: 24px;
+      }
+
+      h1,
+      h2 {
+        font-family: "Instrument Serif", Georgia, serif;
+        font-weight: 400;
+        line-height: 0.96;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(3rem, 8vw, 5.8rem);
+      }
+
+      h2 {
+        font-size: clamp(2.4rem, 6vw, 4.6rem);
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 1.4rem;
+        line-height: 1.15;
+      }
+
+      .italic-gold {
+        color: var(--gold);
+        font-style: italic;
+      }
+
+      .hero-emoji {
+        width: clamp(84px, 16vw, 150px);
+        transform: rotate(6deg);
+        filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.42));
+      }
+
+      .lede {
+        max-width: 680px;
+        margin: 28px 0 0;
+        color: var(--muted);
+        font-size: clamp(1.05rem, 2.3vw, 1.3rem);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-top: 52px;
+        padding-top: 28px;
+        border-top: 1px solid var(--border);
+      }
+
+      .stat strong {
+        display: block;
+        font-family: "Instrument Serif", Georgia, serif;
+        font-size: 2.35rem;
+        line-height: 1;
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .form-card,
+      .card,
+      .feature,
+      .cta {
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(33, 29, 23, 0.82);
+        box-shadow: 0 28px 80px -50px rgba(0, 0, 0, 0.8);
+      }
+
+      .form-card {
+        padding: 30px;
+      }
+
+      .form-card h2 {
+        font-family: Inter, sans-serif;
+        font-size: 1.2rem;
+        font-weight: 600;
+      }
+
+      label {
+        display: block;
+        margin-top: 16px;
+        color: var(--text);
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+
+      input,
+      select {
+        width: 100%;
+        margin-top: 8px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text);
+        padding: 14px 16px;
+        font: inherit;
+      }
+
+      option {
+        color: #17140f;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        margin-top: 22px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--gold);
+        color: var(--gold-dark);
+        padding: 15px 20px;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      section {
+        padding: 82px 0;
+      }
+
+      .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+        color: var(--gold);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 28px;
+        height: 1px;
+        background: var(--gold);
+      }
+
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 28px;
+        margin-bottom: 48px;
+      }
+
+      .section-head p {
+        max-width: 430px;
+        color: var(--muted);
+        margin: 0;
+      }
+
+      .courses {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+      }
+
+      .card {
+        position: relative;
+        min-height: 340px;
+        overflow: hidden;
+        padding: 30px;
+      }
+
+      .card-emoji {
+        position: absolute;
+        right: 22px;
+        top: 22px;
+        width: clamp(92px, 13vw, 142px);
+        transform: rotate(6deg);
+        filter: drop-shadow(0 18px 32px rgba(0, 0, 0, 0.36));
+      }
+
+      .icon {
+        display: grid;
+        place-items: center;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: rgba(219, 168, 77, 0.12);
+        color: var(--gold);
+        font-weight: 800;
+      }
+
+      .card-content {
+        position: relative;
+        max-width: 76%;
+        padding-top: 42px;
+      }
+
+      .card p,
+      .feature p,
+      .unit p {
+        color: var(--muted);
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 22px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .tags li {
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.16);
+        color: var(--muted);
+        padding: 7px 10px;
+        font-size: 0.78rem;
+      }
+
+      .features,
+      .units {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: var(--border);
+      }
+
+      .feature,
+      .unit {
+        border: 0;
+        border-radius: 0;
+        padding: 28px;
+        background: rgba(23, 20, 15, 0.92);
+      }
+
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+      }
+
+      .gallery img {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        object-fit: cover;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+      }
+
+      .units {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .unit a {
+        color: var(--gold);
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      .cta {
+        padding: 54px;
+        text-align: center;
+        background:
+          radial-gradient(circle at 20% 0%, rgba(219, 168, 77, 0.2), transparent 28rem),
+          rgba(33, 29, 23, 0.86);
+      }
+
+      .cta p {
+        max-width: 640px;
+        margin: 18px auto 0;
+        color: var(--muted);
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 44px 0;
+        color: var(--muted);
+        background: rgba(33, 29, 23, 0.46);
+      }
+
+      footer .container {
+        display: flex;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      @media (max-width: 880px) {
+        .menu {
+          display: none;
+        }
+
+        .hero {
+          padding-top: 48px;
+        }
+
+        .hero-grid,
+        .courses,
+        .features,
+        .units,
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-title-row {
+          align-items: flex-start;
+          gap: 14px;
+        }
+
+        .hero-emoji {
+          width: 92px;
+        }
+
+        .stats {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .section-head {
+          display: block;
+        }
+
+        .section-head p {
+          margin-top: 18px;
+        }
+
+        .card {
+          min-height: 320px;
+        }
+
+        .card-content {
+          max-width: 78%;
+        }
+
+        .cta {
+          padding: 34px 22px;
+        }
+
+        footer .container {
+          display: block;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .container {
+          width: min(100% - 28px, 1120px);
+        }
+
+        .logo {
+          width: 142px;
+        }
+
+        .hero-title-row {
+          gap: 10px;
+        }
+
+        .hero-emoji {
+          width: 72px;
+        }
+
+        .form-card,
+        .card {
+          padding: 22px;
+        }
+
+        .card-emoji {
+          right: 12px;
+          top: 16px;
+          width: 88px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <nav class="container nav">
+        <a href="#top" aria-label="Avance Cursos">
+          <img class="logo" src="src/assets/logo-avance.webp" alt="Avance Cursos" />
+        </a>
+        <div class="menu">
+          <a href="#cursos">Cursos</a>
+          <a href="#estrutura">Estrutura</a>
+          <a href="#unidades">Unidades</a>
+          <a href="#matricula">Matricula</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <div class="pill"><span class="dot"></span> Matriculas abertas - Turmas 2026</div>
+            <div class="hero-title-row">
+              <h1>
+                Sua proxima carreira<br />
+                comeca na <span class="italic-gold">Avance</span>.
+              </h1>
+              <img class="hero-emoji" src="src/assets/emoji-header.webp" alt="" aria-hidden="true" />
+            </div>
+            <p class="lede">
+              Cursos profissionalizantes com pratica real, professores atuantes no mercado e
+              estrutura de ponta em Palmares, Escada e Vitoria de Santo Antao.
+            </p>
+            <div class="stats">
+              <div class="stat"><strong>+2.500</strong><span>Alunos formados</span></div>
+              <div class="stat"><strong>+10</strong><span>Areas em alta</span></div>
+              <div class="stat"><strong>3</strong><span>Unidades em PE</span></div>
+              <div class="stat"><strong>98%</strong><span>Satisfacao dos alunos</span></div>
+            </div>
+          </div>
+
+          <form id="matricula" class="form-card">
+            <h2>Solicite contato</h2>
+            <label>
+              Nome completo
+              <input name="nome" placeholder="Como devemos te chamar?" required />
+            </label>
+            <label>
+              Telefone / WhatsApp
+              <input name="telefone" placeholder="(81) 99999-9999" required />
+            </label>
+            <label>
+              Cidade
+              <select name="cidade" required>
+                <option value="">Selecione</option>
+                <option>Palmares - PE</option>
+                <option>Escada - PE</option>
+                <option>Vitoria de Santo Antao - PE</option>
+              </select>
+            </label>
+            <label>
+              Curso de interesse
+              <select name="curso" required>
+                <option value="">Selecione</option>
+                <option>Marketing Digital</option>
+                <option>Farmacia</option>
+                <option>Administracao</option>
+                <option>Informatica</option>
+              </select>
+            </label>
+            <button class="button" type="submit">Quero garantir minha vaga</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="cursos">
+        <div class="container">
+          <div class="eyebrow">Cursos</div>
+          <div class="section-head">
+            <h2>Escolha a carreira. Nos cuidamos do resto.</h2>
+            <p>
+              Grades atualizadas junto ao mercado. Aulas com professores que vivem a profissao.
+              Certificacao ao final do curso.
+            </p>
+          </div>
+
+          <div class="courses">
+            <article class="card">
+              <img class="card-emoji" src="src/assets/emoji-games.webp" alt="Marketing Digital" />
+              <div class="icon">M</div>
+              <div class="card-content">
+                <h3>Marketing Digital</h3>
+                <p>Domine redes sociais, trafego pago e conteudo com apoio de IA.</p>
+              </div>
+              <ul class="tags">
+                <li>Meta e Google Ads</li>
+                <li>Conteudo e IA</li>
+                <li>Portfolio real</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <img class="card-emoji" src="src/assets/emoji-farmacia.webp" alt="Farmacia" />
+              <div class="icon">F</div>
+              <div class="card-content">
+                <h3>Farmacia</h3>
+                <p>Formacao para atuar em farmacias, drogarias, clinicas e hospitais.</p>
+              </div>
+              <ul class="tags">
+                <li>Assistencia farmaceutica</li>
+                <li>Aulas em laboratorio</li>
+                <li>Estagio orientado</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <img class="card-emoji" src="src/assets/emoji-admin.webp" alt="Administracao" />
+              <div class="icon">A</div>
+              <div class="card-content">
+                <h3>Administracao</h3>
+                <p>Gestao, financas, lideranca e processos para crescer em qualquer empresa.</p>
+              </div>
+              <ul class="tags">
+                <li>Gestao financeira</li>
+                <li>Rotinas administrativas</li>
+                <li>Soft skills</li>
+              </ul>
+            </article>
+
+            <article class="card">
+              <img class="card-emoji" src="src/assets/emoji-informatica.webp" alt="Informatica" />
+              <div class="icon">I</div>
+              <div class="card-content">
+                <h3>Informatica</h3>
+                <p>Do zero ao Office avancado. Habilidade que abre portas em toda vaga.</p>
+              </div>
+              <ul class="tags">
+                <li>Windows + Office</li>
+                <li>Internet e IA</li>
+                <li>Pratica guiada</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="eyebrow">Por que Avance</div>
+          <div class="section-head">
+            <h2>Uma escola pensada para o profissional que o mercado procura.</h2>
+          </div>
+          <div class="features">
+            <div class="feature">
+              <h3>Aulas presenciais</h3>
+              <p>Turmas pequenas com professores qualificados e acompanhamento proximo.</p>
+            </div>
+            <div class="feature">
+              <h3>Ensino EAD</h3>
+              <p>Estude no seu ritmo, com suporte da equipe Avance sempre por perto.</p>
+            </div>
+            <div class="feature">
+              <h3>Pratica desde o dia 1</h3>
+              <p>Laboratorios equipados e projetos reais alinhados ao mercado.</p>
+            </div>
+            <div class="feature">
+              <h3>Certificado reconhecido</h3>
+              <p>Documento oficial ao concluir, pronto para valorizar seu curriculo.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="estrutura">
+        <div class="container">
+          <div class="eyebrow">Estrutura</div>
+          <div class="section-head">
+            <h2>Salas que inspiram. Laboratorios que preparam.</h2>
+            <p>
+              Ambientes climatizados, computadores de ultima geracao e laboratorios para aprender
+              teoria e pratica.
+            </p>
+          </div>
+          <div class="gallery">
+            <img src="src/assets/Estrutura_08.webp" alt="Recepcao da Avance Cursos" />
+            <img src="src/assets/estrutura_01.webp" alt="Laboratorio de informatica" />
+            <img src="src/assets/Estrutura_06.webp" alt="Sala de aula" />
+            <img src="src/assets/Estrutura_04.webp" alt="Area de recepcao" />
+            <img src="src/assets/Estrutura_09.webp" alt="Sala climatizada" />
+            <img src="src/assets/class-2.webp" alt="Turma em aula pratica" />
+          </div>
+        </div>
+      </section>
+
+      <section id="unidades">
+        <div class="container">
+          <div class="eyebrow">Unidades</div>
+          <div class="section-head">
+            <h2>Perto de voce, no interior de Pernambuco.</h2>
+          </div>
+          <div class="units">
+            <div class="unit">
+              <h3>Palmares - PE</h3>
+              <p>Turmas presenciais e EAD.</p>
+              <a href="https://www.instagram.com/avance.cursospalmares" target="_blank" rel="noreferrer">Instagram</a>
+            </div>
+            <div class="unit">
+              <h3>Escada - PE</h3>
+              <p>Turmas presenciais e EAD.</p>
+              <a href="https://www.instagram.com/avancecursosescada" target="_blank" rel="noreferrer">Instagram</a>
+            </div>
+            <div class="unit">
+              <h3>Vitoria de Santo Antao - PE</h3>
+              <p>Turmas presenciais e EAD.</p>
+              <a href="https://www.instagram.com/avancecursosvitoria" target="_blank" rel="noreferrer">Instagram</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="container">
+          <div class="cta">
+            <h2>De o proximo passo na sua carreira agora.</h2>
+            <p>
+              Preencha o formulario e um consultor da Avance vai te ajudar a escolher o curso ideal.
+            </p>
+            <a class="button" href="#matricula">Quero garantir minha vaga</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <div>
+          <img class="logo" src="src/assets/logo-avance.webp" alt="Avance Cursos" />
+          <p>Formacao profissional pratica, moderna e acessivel em Pernambuco.</p>
+        </div>
+        <p>Avance Cursos - 2026</p>
+      </div>
+    </footer>
+  </body>
+</html>
