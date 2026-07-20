@@ -106,6 +106,7 @@
 
       .menu {
         display: flex;
+        flex-wrap: wrap;
         gap: 28px;
         color: var(--muted);
         font-size: 0.92rem;
@@ -301,6 +302,26 @@
         cursor: pointer;
       }
 
+      .button.inline {
+        width: auto;
+        padding-inline: 26px;
+      }
+
+      .text-button {
+        border: 0;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
+        padding: 0;
+        text-align: left;
+      }
+
+      .text-button:hover,
+      .footer-link:hover {
+        color: var(--text);
+      }
+
       section {
         padding: 82px 0;
       }
@@ -349,6 +370,17 @@
         min-height: 340px;
         overflow: hidden;
         padding: 30px;
+      }
+
+      .course-card,
+      .unit-card {
+        cursor: pointer;
+      }
+
+      .course-card:hover,
+      .unit-card:hover {
+        border-color: rgba(219, 168, 77, 0.42);
+        background: rgba(42, 37, 29, 0.9);
       }
 
       .card-emoji {
@@ -650,26 +682,131 @@
         color: var(--muted);
       }
 
+      .cta-points {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 14px 28px;
+        margin: 26px 0 0;
+        padding: 0;
+        color: var(--muted);
+        list-style: none;
+        font-size: 0.92rem;
+      }
+
+      .cta-points li::before {
+        content: "✓";
+        margin-right: 8px;
+        color: var(--gold);
+        font-weight: 900;
+      }
+
       footer {
         border-top: 1px solid var(--border);
-        padding: 44px 0;
+        padding: 0;
         color: var(--muted);
         background: rgba(33, 29, 23, 0.46);
       }
 
-      footer .container {
+      .footer-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1.2fr;
+        gap: 48px;
+        padding-block: 64px;
+      }
+
+      .footer-brand p {
+        max-width: 390px;
+        margin: 18px 0 0;
+        font-size: 0.92rem;
+      }
+
+      .footer-title {
+        color: var(--text);
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .footer-list {
+        display: grid;
+        gap: 10px;
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
+        font-size: 0.92rem;
+      }
+
+      .footer-unit {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .instagram-dot {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.8rem;
+        font-weight: 800;
+      }
+
+      .instagram-dot:hover {
+        border-color: rgba(219, 168, 77, 0.55);
+        color: var(--gold);
+      }
+
+      .footer-bottom {
         display: flex;
         justify-content: space-between;
-        gap: 24px;
+        gap: 18px;
+        border-top: 1px solid var(--border);
+        padding-block: 28px;
+        font-size: 0.8rem;
+      }
+
+      .scroll-top {
+        position: fixed;
+        right: 22px;
+        bottom: 22px;
+        z-index: 12;
+        display: none;
+        place-items: center;
+        width: 50px;
+        height: 50px;
+        border: 0;
+        border-radius: 999px;
+        background: var(--gold);
+        color: var(--gold-dark);
+        cursor: pointer;
+        font-size: 1.25rem;
+        font-weight: 900;
+        box-shadow: 0 0 60px -14px var(--gold);
+      }
+
+      .scroll-top.is-visible {
+        display: grid;
       }
 
       @media (max-width: 880px) {
-        .menu {
-          display: none;
-        }
-
         .hero {
           padding-top: 48px;
+        }
+
+        .nav {
+          align-items: flex-start;
+          flex-direction: column;
+          padding-block: 18px;
+        }
+
+        .menu {
+          gap: 12px 18px;
+          font-size: 0.86rem;
         }
 
         .hero-grid,
@@ -730,8 +867,13 @@
           padding: 34px 22px;
         }
 
-        footer .container {
-          display: block;
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+
+        .footer-bottom {
+          display: grid;
         }
       }
 
@@ -862,7 +1004,7 @@
           </div>
 
           <div class="courses">
-            <article class="card">
+            <article class="card course-card" data-course="Marketing Digital">
               <img class="card-emoji" src="src/assets/emoji-games.webp" alt="Marketing Digital" />
               <div class="icon">M</div>
               <div class="card-content">
@@ -876,7 +1018,7 @@
               </ul>
             </article>
 
-            <article class="card">
+            <article class="card course-card" data-course="Farmacia">
               <img class="card-emoji" src="src/assets/emoji-farmacia.webp" alt="Farmacia" />
               <div class="icon">F</div>
               <div class="card-content">
@@ -890,7 +1032,7 @@
               </ul>
             </article>
 
-            <article class="card">
+            <article class="card course-card" data-course="Administracao">
               <img class="card-emoji" src="src/assets/emoji-admin.webp" alt="Administracao" />
               <div class="icon">A</div>
               <div class="card-content">
@@ -904,7 +1046,7 @@
               </ul>
             </article>
 
-            <article class="card">
+            <article class="card course-card" data-course="Informatica">
               <img class="card-emoji" src="src/assets/emoji-informatica.webp" alt="Informatica" />
               <div class="icon">I</div>
               <div class="card-content">
@@ -1036,6 +1178,26 @@
                 "O laboratorio equipado e orientado foi decisivo para eu comecar a trabalhar na area."
               </blockquote>
             </article>
+            <article class="testimonial">
+              <div class="person">
+                <div class="avatar">BC</div>
+                <p><strong>Barbara Costa</strong><span>Informatica</span></p>
+              </div>
+              <blockquote>
+                "Sai do zero e hoje lido sozinha com planilhas, apresentacoes e rotinas administrativas.
+                Aulas claras e diretas."
+              </blockquote>
+            </article>
+            <article class="testimonial">
+              <div class="person">
+                <div class="avatar">AM</div>
+                <p><strong>Ana Paula Mendes</strong><span>Administracao</span></p>
+              </div>
+              <blockquote>
+                "A equipe da Avance me acompanhou do inicio ao fim. Me senti preparada para o mercado
+                antes mesmo de concluir."
+              </blockquote>
+            </article>
           </div>
           <div class="proof">
             <div><strong>4,9/5</strong><span>Avaliacao media</span></div>
@@ -1072,17 +1234,17 @@
             <h2>Perto de voce, no interior de Pernambuco.</h2>
           </div>
           <div class="units">
-            <div class="unit">
+            <div class="unit unit-card" data-city="Palmares - PE">
               <h3>Palmares - PE</h3>
               <p>Turmas presenciais e EAD.</p>
               <a href="https://www.instagram.com/avance.cursospalmares" target="_blank" rel="noreferrer">Instagram</a>
             </div>
-            <div class="unit">
+            <div class="unit unit-card" data-city="Escada - PE">
               <h3>Escada - PE</h3>
               <p>Turmas presenciais e EAD.</p>
               <a href="https://www.instagram.com/avancecursosescada" target="_blank" rel="noreferrer">Instagram</a>
             </div>
-            <div class="unit">
+            <div class="unit unit-card" data-city="Vitoria de Santo Antao - PE">
               <h3>Vitoria de Santo Antao - PE</h3>
               <p>Turmas presenciais e EAD.</p>
               <a href="https://www.instagram.com/avancecursosvitoria" target="_blank" rel="noreferrer">Instagram</a>
@@ -1140,23 +1302,96 @@
             <p>
               Preencha o formulario e um consultor da Avance vai te ajudar a escolher o curso ideal.
             </p>
-            <a class="button" href="#matricula">Quero garantir minha vaga</a>
+            <ul class="cta-points">
+              <li>Retorno em ate 24h</li>
+              <li>Sem compromisso</li>
+              <li>Condicao especial para inscritos hoje</li>
+            </ul>
+            <a class="button inline" href="#matricula">Quero garantir minha vaga</a>
           </div>
         </div>
       </section>
     </main>
 
     <footer>
-      <div class="container">
-        <div>
-          <img class="logo" src="src/assets/logo-avance.webp" alt="Avance Cursos" />
-          <p>Formacao profissional pratica, moderna e acessivel em Pernambuco.</p>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <a href="#top" aria-label="Voltar ao topo">
+            <img class="logo" src="src/assets/logo-avance.webp" alt="Avance Cursos" />
+          </a>
+          <p>
+            Formacao profissional pratica, moderna e acessivel em Pernambuco.
+            Aprenda o que o mercado realmente pede.
+          </p>
         </div>
-        <p>Avance Cursos - 2026</p>
+
+        <div>
+          <div class="footer-title">Cursos</div>
+          <ul class="footer-list">
+            <li><button class="text-button footer-link" type="button" data-course-button="Marketing Digital">Marketing Digital</button></li>
+            <li><button class="text-button footer-link" type="button" data-course-button="Farmacia">Farmacia</button></li>
+            <li><button class="text-button footer-link" type="button" data-course-button="Administracao">Administracao</button></li>
+            <li><button class="text-button footer-link" type="button" data-course-button="Informatica">Informatica</button></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="footer-title">Unidades</div>
+          <ul class="footer-list">
+            <li class="footer-unit">
+              <button class="text-button footer-link" type="button" data-city-button="Palmares - PE">Palmares - PE</button>
+              <a class="instagram-dot" href="https://www.instagram.com/avance.cursospalmares?igsh=MXRlNjNtcWJmcWV3Nw==" target="_blank" rel="noreferrer" aria-label="Instagram de Avance Cursos Palmares">IG</a>
+            </li>
+            <li class="footer-unit">
+              <button class="text-button footer-link" type="button" data-city-button="Escada - PE">Escada - PE</button>
+              <a class="instagram-dot" href="https://www.instagram.com/avancecursosescada?igsh=NHc4MHE0bWRmc3Ju" target="_blank" rel="noreferrer" aria-label="Instagram de Avance Cursos Escada">IG</a>
+            </li>
+            <li class="footer-unit">
+              <button class="text-button footer-link" type="button" data-city-button="Vitoria de Santo Antao - PE">Vitoria de Santo Antao - PE</button>
+              <a class="instagram-dot" href="https://www.instagram.com/avancecursosvitoria?igsh=MWx1Y21zcTB6aTRydg==" target="_blank" rel="noreferrer" aria-label="Instagram de Avance Cursos Vitoria de Santo Antao">IG</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="container footer-bottom">
+        <span>© 2026 Avance Cursos. Todos os direitos reservados.</span>
+        <span>Feito com cuidado em Pernambuco.</span>
       </div>
     </footer>
+    <button class="scroll-top" type="button" aria-label="Voltar ao topo">↑</button>
     <script>
       const form = document.querySelector("#matricula");
+      const courseSelect = document.querySelector('select[name="curso"]');
+      const citySelect = document.querySelector('select[name="cidade"]');
+
+      function goToForm() {
+        form?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function fillCourse(course) {
+        if (courseSelect) courseSelect.value = course;
+        goToForm();
+      }
+
+      function fillCity(city) {
+        if (citySelect) citySelect.value = city;
+        goToForm();
+      }
+
+      document.querySelectorAll("[data-course], [data-course-button]").forEach((item) => {
+        item.addEventListener("click", () => {
+          fillCourse(item.dataset.course || item.dataset.courseButton);
+        });
+      });
+
+      document.querySelectorAll("[data-city], [data-city-button]").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          if (event.target.closest("a")) return;
+          fillCity(item.dataset.city || item.dataset.cityButton);
+        });
+      });
+
       if (form) {
         form.addEventListener("submit", (event) => {
           event.preventDefault();
@@ -1164,6 +1399,14 @@
             '<div style="text-align:center; padding: 36px 0"><h2>Inscricao recebida!</h2><p class="lede" style="margin-inline:auto">Nossa equipe entrara em contato em ate 24 horas uteis.</p><a class="button" href="#top">Voltar ao inicio</a></div>';
         });
       }
+
+      const scrollTopButton = document.querySelector(".scroll-top");
+      window.addEventListener("scroll", () => {
+        scrollTopButton?.classList.toggle("is-visible", window.scrollY > 700);
+      });
+      scrollTopButton?.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
     </script>
   </body>
 </html>
