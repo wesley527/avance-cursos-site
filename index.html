@@ -1326,8 +1326,8 @@
           overflow-x: auto;
           overflow-y: visible;
           scroll-snap-type: none;
-          mask-image: none;
-          -webkit-mask-image: none;
+          mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
           -webkit-overflow-scrolling: touch;
           scrollbar-width: none;
           touch-action: pan-x;
@@ -1351,7 +1351,10 @@
         .gallery .carousel-track,
         .experience-grid .carousel-track,
         .testimonials .carousel-track {
-          animation: none;
+          animation-name: carousel-scroll;
+          animation-duration: var(--carousel-duration);
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
         }
 
         .gallery img,
@@ -1375,7 +1378,10 @@
           display: flex;
           gap: var(--carousel-gap);
           width: max-content;
-          animation: none;
+          animation-name: carousel-scroll;
+          animation-duration: var(--carousel-duration);
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
           will-change: transform;
         }
 
@@ -2196,119 +2202,12 @@
       });
 
       const mobileCarouselQuery = window.matchMedia("(max-width: 680px)");
-      const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-      function getCarouselLoopPoint(track, originalCount) {
-        const firstClone = track.children[originalCount];
-        return firstClone ? firstClone.offsetLeft : Math.floor(track.scrollWidth / 2);
-      }
-
-      function getMobileCarouselSpeed(carousel) {
-        if (carousel.matches(".testimonials")) return 18;
-        if (carousel.matches(".experience-grid")) return 22;
-        return 28;
-      }
-
-      function enableMobileCarouselScroll(carousel, track, originalCount) {
-        let loopPoint = 0;
-        let scrollFrame = 0;
-        let resizeFrame = 0;
-        let autoplayFrame = 0;
-        let lastAutoplayTime = 0;
+      function enableMobileCarouselDrag(carousel) {
         let isMouseDragging = false;
         let didMouseDrag = false;
         let dragStartX = 0;
         let dragStartScroll = 0;
-        const autoplaySpeed = getMobileCarouselSpeed(carousel);
-
-        const measure = () => {
-          loopPoint = getCarouselLoopPoint(track, originalCount);
-          return loopPoint;
-        };
-
-        const applyMode = () => {
-          const measuredLoopPoint = measure();
-          if (!measuredLoopPoint) return;
-
-          if (mobileCarouselQuery.matches) {
-            if (carousel.dataset.mobileLoopReady !== "true") {
-              carousel.scrollLeft = measuredLoopPoint;
-              carousel.dataset.mobileLoopReady = "true";
-            }
-            startAutoplay();
-          } else {
-            carousel.dataset.mobileLoopReady = "false";
-            carousel.scrollLeft = 0;
-            stopAutoplay();
-          }
-        };
-
-        const keepLooping = () => {
-          if (!mobileCarouselQuery.matches) return;
-
-          const measuredLoopPoint = loopPoint || measure();
-          if (!measuredLoopPoint) return;
-
-          if (carousel.scrollLeft <= 1) {
-            carousel.scrollLeft += measuredLoopPoint;
-          } else if (carousel.scrollLeft >= measuredLoopPoint + 1) {
-            carousel.scrollLeft -= measuredLoopPoint;
-          }
-        };
-
-        const shouldAutoplay = () =>
-          mobileCarouselQuery.matches &&
-          !reducedMotionQuery.matches &&
-          !document.hidden &&
-          !carousel.classList.contains("is-paused") &&
-          !isMouseDragging;
-
-        const autoplay = (timestamp) => {
-          autoplayFrame = requestAnimationFrame(autoplay);
-
-          if (!shouldAutoplay()) {
-            lastAutoplayTime = timestamp;
-            return;
-          }
-
-          const measuredLoopPoint = loopPoint || measure();
-          if (!measuredLoopPoint) {
-            lastAutoplayTime = timestamp;
-            return;
-          }
-
-          if (!lastAutoplayTime) lastAutoplayTime = timestamp;
-
-          const elapsed = Math.min(timestamp - lastAutoplayTime, 80);
-          lastAutoplayTime = timestamp;
-          carousel.scrollLeft += autoplaySpeed * (elapsed / 1000);
-          keepLooping();
-        };
-
-        function startAutoplay() {
-          if (autoplayFrame || reducedMotionQuery.matches) return;
-          lastAutoplayTime = 0;
-          autoplayFrame = requestAnimationFrame(autoplay);
-        }
-
-        function stopAutoplay() {
-          if (!autoplayFrame) return;
-          cancelAnimationFrame(autoplayFrame);
-          autoplayFrame = 0;
-          lastAutoplayTime = 0;
-        }
-
-        carousel.addEventListener(
-          "scroll",
-          () => {
-            if (!mobileCarouselQuery.matches || scrollFrame) return;
-            scrollFrame = requestAnimationFrame(() => {
-              scrollFrame = 0;
-              keepLooping();
-            });
-          },
-          { passive: true },
-        );
 
         carousel.addEventListener("pointerdown", (event) => {
           if (!mobileCarouselQuery.matches || event.pointerType === "touch") return;
@@ -2363,31 +2262,6 @@
           },
           true,
         );
-
-        const scheduleModeUpdate = () => {
-          if (resizeFrame) cancelAnimationFrame(resizeFrame);
-          resizeFrame = requestAnimationFrame(() => {
-            resizeFrame = 0;
-            applyMode();
-          });
-        };
-
-        if (mobileCarouselQuery.addEventListener) {
-          mobileCarouselQuery.addEventListener("change", scheduleModeUpdate);
-        } else {
-          mobileCarouselQuery.addListener(scheduleModeUpdate);
-        }
-
-        if (reducedMotionQuery.addEventListener) {
-          reducedMotionQuery.addEventListener("change", scheduleModeUpdate);
-        } else {
-          reducedMotionQuery.addListener(scheduleModeUpdate);
-        }
-
-        window.addEventListener("resize", scheduleModeUpdate, { passive: true });
-        window.addEventListener("load", scheduleModeUpdate, { once: true });
-        document.addEventListener("visibilitychange", scheduleModeUpdate);
-        requestAnimationFrame(applyMode);
       }
 
       function setupInfiniteCarousel(selector) {
@@ -2408,7 +2282,7 @@
 
         carousel.appendChild(track);
         carousel.dataset.ready = "true";
-        enableMobileCarouselScroll(carousel, track, items.length);
+        enableMobileCarouselDrag(carousel);
 
         ["pointerdown", "touchstart", "focusin"].forEach((eventName) => {
           carousel.addEventListener(eventName, () => carousel.classList.add("is-paused"), {
